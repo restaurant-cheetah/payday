@@ -10,6 +10,11 @@ module Payday
             pdf.render
           }.not_to raise_error
         end
+
+        it 'has ttf fonts status' do
+          PrawnTtfDocument.new
+          expect(PrawnTtfDocument.fonts_status).to eql 'ttf'
+        end
       end
   end
 end
