@@ -256,12 +256,7 @@ module Payday
         cell(pdf, number_to_currency(invoice.total, invoice),
              size: 12, align: :right)
       ]
-      table = pdf.make_table(table_data, cell_style: { borders: [] })
-      pdf.bounding_box([pdf.bounds.width - table.width, pdf.cursor],
-                       width: table.width, height: table.height + 2) do
-
-        table.draw
-      end
+      pdf.table(table_data, cell_style: { borders: [] }, position: :right)
     end
 
     def self.notes(invoice, pdf)
