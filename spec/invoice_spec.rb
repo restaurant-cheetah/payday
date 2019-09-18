@@ -237,5 +237,33 @@ module Payday
         Invoice.new(default_params.merge(params))
       end
     end
+
+    describe 'totals' do
+      context 'with no custom tax' do
+        it 'calculates totals correctly' do
+          i = Invoice.new(invoice_number: 20, bill_to: "Here", ship_to: "There",
+                          notes: "These are some notes.",
+                          line_items:
+                           [LineItem.new(price: 10, quantity: 3, description: "Shirts")],
+                          invoice_date: Date.civil(1993, 4, 12))
+          expect(i.tax).to eql 0
+          expect(i.subtotal).to eql 30
+          expect(i.total).to eql 30
+        end
+      end
+      context 'with custom tax' do
+        it 'calculates totals correctly' do
+          i = Invoice.new(invoice_number: 20, bill_to: "Here", ship_to: "There",
+                          notes: "These are some notes.",
+                          line_items:
+                           [LineItem.new(price: 10, quantity: 3, description: "Shirts")],
+                          invoice_date: Date.civil(1993, 4, 12))
+          i.custom_tax = 15
+          expect(i.tax).to eql 15
+          expect(i.subtotal).to eql 30
+          expect(i.total).to eql 45
+        end
+      end
+    end
   end
 end

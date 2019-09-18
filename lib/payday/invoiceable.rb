@@ -29,7 +29,8 @@ module Payday::Invoiceable
 
   # The tax for this invoice, as a BigDecimal
   def tax
-      items_tax
+    return custom_tax if defined?(custom_tax) && !!custom_tax
+    items_tax
   end
 
   # TODO Add a per weight unit shipping cost
