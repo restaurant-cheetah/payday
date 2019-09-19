@@ -195,7 +195,7 @@ module Payday
 
     def self.line_items_table(invoice, pdf)
       table_data = LINE_ITEMS
-        .select{| item | !invoice.except_fields.include?(item[:id])}
+        .select{| item | !invoice.exclude_fields.include?(item[:id])}
         .map{| item | bold_cell(pdf, I18n.t(item.[:t][0], default: item.[:t][1]), item[:opts])}
       invoice.line_items.each do |line|
         table_data << [line.description,
