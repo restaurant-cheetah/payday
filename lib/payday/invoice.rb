@@ -5,7 +5,7 @@ module Payday
 
     attr_accessor :invoice_number, :bill_to, :ship_to, :notes, :line_items, :shipping_rate, :shipping_description,
                   :tax_rate, :tax_description, :due_at, :paid_at, :refunded_at, :currency,
-                  :invoice_details, :invoice_date, :custom_tax
+                  :invoice_details, :invoice_date, :custom_tax, :except_fields
 
     def initialize(options =  {})
       self.invoice_number = options[:invoice_number] || nil
@@ -24,6 +24,7 @@ module Payday
       self.invoice_details = options[:invoice_details] || []
       self.invoice_date = options[:invoice_date] || nil
       self.custom_tax = options[:custom_tax] || nil
+      self.except_fields = options[:except_fields] || []
     end
 
     # The tax rate that we're applying, as a BigDecimal

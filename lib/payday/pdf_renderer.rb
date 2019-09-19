@@ -2,6 +2,14 @@ module Payday
   # The PDF renderer. We use this internally in Payday to render pdfs, but really you should just need to call
   # {{Payday::Invoiceable#render_pdf}} to render pdfs yourself.
   class PdfRenderer
+    LINE_ITEMS = {
+      {id: :description, t: ["payday.line_item.description", "Description"], opts: [borders: []]},
+      {id: :unit_price, t: ["payday.line_item.unit_price", "Unit Price"], opts: [align: :center, borders: []]},
+      {id: :tax, t: ["payday.line_item.tax", "Tax"], opts: [align: :center, borders: []]},
+      {id: :quantity, t: ["payday.line_item.unit_price", "Quantity"], opts: [align: :center, borders: []]},
+      {id: :amount, t: ["payday.line_item.unit_price", "Amount"], opts: [align: :center, borders: []]},
+    }
+
     # Renders the given invoice as a pdf on disk
     def self.render_to_file(invoice, path)
       pdf(invoice).render_file(path)
@@ -186,12 +194,9 @@ module Payday
     end
 
     def self.line_items_table(invoice, pdf)
-      table_data = []
-      table_data << [bold_cell(pdf, I18n.t("payday.line_item.description", default: "Description"), borders: []),
-                     bold_cell(pdf, I18n.t("payday.line_item.unit_price", default: "Unit Price"), align: :center, borders: []),
-                     bold_cell(pdf, I18n.t("payday.line_item.tax", default: "Tax"), align: :center, borders: []),
-                     bold_cell(pdf, I18n.t("payday.line_item.quantity", default: "Quantity"), align: :center, borders: []),
-                     bold_cell(pdf, I18n.t("payday.line_item.amount", default: "Amount"), align: :center, borders: [])]
+      table_data = LINE_ITEMS
+        .select{| item | !invoice.except_fields.include?(item.id)}
+        .map{| item | bold_cell(pdf, I18n.t(item.t[0], default: item.t[1]), item.opts)}
       invoice.line_items.each do |line|
         table_data << [line.description,
                        (line.display_price || number_to_currency(line.price, invoice)),
