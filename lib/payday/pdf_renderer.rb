@@ -3,11 +3,11 @@ module Payday
   # {{Payday::Invoiceable#render_pdf}} to render pdfs yourself.
   class PdfRenderer
     LINE_ITEMS = [
-      {id: :description, t: ["payday.line_item.description", "Description"], opts: [borders: []]},
-      {id: :unit_price, t: ["payday.line_item.unit_price", "Unit Price"], opts: [align: :center, borders: []]},
-      {id: :tax, t: ["payday.line_item.tax", "Tax"], opts: [align: :center, borders: []]},
-      {id: :quantity, t: ["payday.line_item.unit_price", "Quantity"], opts: [align: :center, borders: []]},
-      {id: :amount, t: ["payday.line_item.unit_price", "Amount"], opts: [align: :center, borders: []]},
+      {id: :description, t: ["payday.line_item.description", "Description"], opts: {borders: []}},
+      {id: :unit_price, t: ["payday.line_item.unit_price", "Unit Price"], opts: {align: :center, borders: []}},
+      {id: :tax, t: ["payday.line_item.tax", "Tax"], opts: {align: :center, borders: []}},
+      {id: :quantity, t: ["payday.line_item.unit_price", "Quantity"], opts: {align: :center, borders: []}},
+      {id: :amount, t: ["payday.line_item.unit_price", "Amount"], opts: {align: :center, borders: []}},
     ]
 
     # Renders the given invoice as a pdf on disk
