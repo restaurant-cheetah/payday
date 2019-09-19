@@ -6,8 +6,8 @@ module Payday
       {id: :description, t: ["payday.line_item.description", "Description"], opts: {borders: []}},
       {id: :unit_price, t: ["payday.line_item.unit_price", "Unit Price"], opts: {align: :center, borders: []}},
       {id: :tax, t: ["payday.line_item.tax", "Tax"], opts: {align: :center, borders: []}},
-      {id: :quantity, t: ["payday.line_item.unit_price", "Quantity"], opts: {align: :center, borders: []}},
-      {id: :amount, t: ["payday.line_item.unit_price", "Amount"], opts: {align: :center, borders: []}},
+      {id: :quantity, t: ["payday.line_item.quantity", "Quantity"], opts: {align: :center, borders: []}},
+      {id: :amount, t: ["payday.line_item.amount", "Amount"], opts: {align: :center, borders: []}},
     ]
 
     # Renders the given invoice as a pdf on disk
@@ -201,7 +201,7 @@ module Payday
       invoice.line_items.each do |line|
         table_data << [line.description,
                        (line.display_price || number_to_currency(line.price, invoice)),
-                       number_to_currency(line.tax, invoice),
+                       invoice.exclude_fields.include?(:tax) ? "" : number_to_currency(line.tax, invoice),
                        (line.display_quantity || BigDecimal.new(line.quantity.to_s).to_s("F")),
                        number_to_currency(line.amount, invoice)]
       end
