@@ -193,17 +193,32 @@ module Payday
       end
     end
 
+    def self.line_item_display(item_id, line, invoice)
+      case item_id
+      when :description
+        line.description
+      when :unit_price
+        line.display_price || number_to_currency(line.price, invoice)
+      when :tax
+        number_to_currency(line.tax, invoice)
+      when :quantity
+        line.display_quantity || BigDecimal.new(line.quantity.to_s).to_s("F")
+      when :amount
+        number_to_currency(line.amount, invoice)
+      else
+        ""
+      end
+    end
+
     def self.line_items_table(invoice, pdf)
       table_data = []
       table_data << LINE_ITEMS
         .select{| item | !invoice.exclude_fields.include?(item[:id])}
         .map{| item | bold_cell(pdf, I18n.t(item[:t][0], default: item[:t][1]), item[:opts])}
       invoice.line_items.each do |line|
-        table_data << [line.description,
-                       (line.display_price || number_to_currency(line.price, invoice)),
-                       invoice.exclude_fields.include?(:tax) ? "" : number_to_currency(line.tax, invoice),
-                       (line.display_quantity || BigDecimal.new(line.quantity.to_s).to_s("F")),
-                       number_to_currency(line.amount, invoice)]
+        table_data << LINE_ITEMS
+          .select{| item | !invoice.exclude_fields.include?(item[:id])}
+          .map{|item| line_item_display(item[:id], line, invoice)}
       end
 
       pdf.move_cursor_to(pdf.cursor - 20)
