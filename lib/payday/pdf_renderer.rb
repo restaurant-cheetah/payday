@@ -271,6 +271,15 @@ module Payday
                align: :right)
         ]
       end
+
+      if invoice.discount != 0
+        table_data << [
+         bold_cell(pdf, "Discount:"),
+         cell(pdf, number_to_currency(invoice.discount, invoice),
+              align: :right)
+        ]
+      end
+
       table_data << [
         bold_cell(pdf, I18n.t("payday.invoice.total", default: "Total:"),
                   size: 12),

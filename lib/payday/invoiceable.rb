@@ -20,11 +20,24 @@ module Payday::Invoiceable
 
   # Calculates the subtotal of this invoice by adding up all of the line items
   def subtotal
-    line_items.reduce(BigDecimal.new("0")) { |result, item| result += item.amount_no_tax }
+    line_items.reduce(BigDecimal.new("0")) do |result, item|
+      result += item.amount_no_tax unless item.is_discount
+      result
+    end
   end
 
   def items_tax
-    line_items.reduce(BigDecimal.new("0")) { |result, item| result += item.item_tax }
+    line_items.reduce(BigDecimal.new("0")) do |result, item|
+      result += item.item_tax
+      result
+    end
+  end
+
+  def discount
+    line_items.reduce(BigDecimal.new("0")) do |result, item|
+      result += item.amount_no_tax if item.is_discount
+      result
+    end
   end
 
   # The tax for this invoice, as a BigDecimal
@@ -45,7 +58,7 @@ module Payday::Invoiceable
 
   # Calculates the total for this invoice.
   def total
-    subtotal + tax + shipping
+    subtotal + tax + shipping + discount
   end
 
   def overdue?
