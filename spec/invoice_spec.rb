@@ -160,32 +160,65 @@ module Payday
     end
 
     context 'discount' do
-      context 'with no items' do
-        it 'returns 0' do
-          i = Invoice.new()
-          expect(i.subtotal).to eql BigDecimal.new("0.0")
-          expect(i.total).to eql BigDecimal.new("0.0")
-          expect(i.discount).to eql BigDecimal.new("0.0")
+      context 'when show_discount true' do
+        context 'with no items' do
+          it 'returns 0' do
+            i = Invoice.new(show_discount: true)
+            expect(i.subtotal).to eql BigDecimal.new("0.0")
+            expect(i.total).to eql BigDecimal.new("0.0")
+            expect(i.discount).to eql BigDecimal.new("0.0")
+          end
+        end
+        context 'with items, but no discount' do
+          it 'returns 0' do
+            i = Invoice.new(show_discount: true, line_items:
+                             [LineItem.new(price: 10, quantity: 3, description: "Shirts")])
+            expect(i.subtotal).to eql BigDecimal.new("30.0")
+            expect(i.total).to eql BigDecimal.new("30.0")
+            expect(i.discount).to eql BigDecimal.new("0.0")
+          end
+        end
+        context 'with discount items' do
+          it 'returns 0' do
+            i = Invoice.new(show_discount: true,
+                            line_items: [
+                             LineItem.new(price: 10, quantity: 3, description: "Shirts"),
+                             LineItem.new(price: -5, quantity: 3, description: "Discount - Shirts", is_discount: true)
+                            ])
+            expect(i.discount).to eql BigDecimal.new("-15.0")
+            expect(i.subtotal).to eql BigDecimal.new("30.0")
+            expect(i.total).to eql BigDecimal.new("15.0")
+          end
         end
       end
-      context 'with items, but no discount' do
-        it 'returns 0' do
-          i = Invoice.new(line_items:
-                           [LineItem.new(price: 10, quantity: 3, description: "Shirts")])
-          expect(i.subtotal).to eql BigDecimal.new("30.0")
-          expect(i.total).to eql BigDecimal.new("30.0")
-          expect(i.discount).to eql BigDecimal.new("0.0")
+      context 'when show_discount false' do
+        context 'with no items' do
+          it 'returns 0' do
+            i = Invoice.new()
+            expect(i.subtotal).to eql BigDecimal.new("0.0")
+            expect(i.total).to eql BigDecimal.new("0.0")
+            expect(i.discount).to eql BigDecimal.new("0.0")
+          end
         end
-      end
-      context 'with discount items' do
-        it 'returns 0' do
-          i = Invoice.new(line_items: [
-                           LineItem.new(price: 10, quantity: 3, description: "Shirts"),
-                           LineItem.new(price: -5, quantity: 3, description: "Discount - Shirts", is_discount: true)
-                          ])
-          expect(i.discount).to eql BigDecimal.new("-15.0")
-          expect(i.subtotal).to eql BigDecimal.new("30.0")
-          expect(i.total).to eql BigDecimal.new("15.0")
+        context 'with items, but no discount' do
+          it 'returns 0' do
+            i = Invoice.new(line_items:
+                             [LineItem.new(price: 10, quantity: 3, description: "Shirts")])
+            expect(i.subtotal).to eql BigDecimal.new("30.0")
+            expect(i.total).to eql BigDecimal.new("30.0")
+            expect(i.discount).to eql BigDecimal.new("0.0")
+          end
+        end
+        context 'with discount items' do
+          it 'returns 0' do
+            i = Invoice.new(line_items: [
+             LineItem.new(price: 10, quantity: 3, description: "Shirts"),
+             LineItem.new(price: -5, quantity: 3, description: "Discount - Shirts", is_discount: true)
+            ])
+            expect(i.discount).to eql BigDecimal.new("0.0")
+            expect(i.subtotal).to eql BigDecimal.new("15.0")
+            expect(i.total).to eql BigDecimal.new("15.0")
+          end
         end
       end
     end
