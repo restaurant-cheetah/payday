@@ -19,7 +19,7 @@ module Payday
 
     it "should return the correct amount" do
       li = LineItem.new(price: 10, quantity: 12)
-      expect(li.amount).to eq(BigDecimal("120"))
+      expect(li.amount).to eql(BigDecimal("120"))
     end
   end
 end
