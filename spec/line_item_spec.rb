@@ -2,7 +2,7 @@ require "spec_helper"
 
 module Payday
   describe LineItem do
-    it "should be able to be initilized with a price" do
+    it "should be able to be initialized with a price" do
       li = LineItem.new(price: BigDecimal("20"))
       expect(li.price).to eq(BigDecimal("20"))
     end
