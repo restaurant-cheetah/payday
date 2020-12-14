@@ -20,21 +20,21 @@ module Payday::Invoiceable
 
   # Calculates the subtotal of this invoice by adding up all of the line items
   def subtotal
-    line_items.reduce(BigDecimal.new("0")) do |result, item|
+    line_items.reduce(BigDecimal("0")) do |result, item|
       result += item.amount_no_tax unless show_discount && item.is_discount
       result
     end
   end
 
   def items_tax
-    line_items.reduce(BigDecimal.new("0")) do |result, item|
+    line_items.reduce(BigDecimal("0")) do |result, item|
       result += item.item_tax
       result
     end
   end
 
   def discount
-    line_items.reduce(BigDecimal.new("0")) do |result, item|
+    line_items.reduce(BigDecimal("0")) do |result, item|
       result += item.amount_no_tax if show_discount && item.is_discount
       result
     end
