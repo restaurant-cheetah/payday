@@ -202,7 +202,7 @@ module Payday
       when :tax
         number_to_currency(line.tax, invoice)
       when :quantity
-        line.display_quantity || BigDecimal.new(line.quantity.to_s).to_s("F")
+        line.display_quantity || BigDecimal(line.quantity.to_s).to_s("F")
       when :amount
         number_to_currency(line.amount, invoice)
       else
